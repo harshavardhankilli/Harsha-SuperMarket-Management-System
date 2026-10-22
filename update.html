@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket — Update Product</title>
+    <meta name="description" content="Update existing supermarket item details, price, and stock levels with instant database synchronization.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="update">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link active"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Hero Banner with Dedicated Update Image Area -->
+    <section class="page-hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="fa-solid fa-pen-to-square"></i> Inventory Adjustment
+                </div>
+                <h1 class="hero-title">Update Product Details</h1>
+                <p class="hero-subtitle">
+                    Fetch existing supermarket items by Product ID, update prices, replenish quantities, and commit modifications straight to MySQL.
+                </p>
+            </div>
+
+            <!-- Dedicated Image Area (Update: images/update-product.png) with Clean CSS Fallback -->
+            <div class="page-image-box">
+                <img src="images/update-product.png" alt="Update Supermarket Product" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none;">
+                    <div class="fallback-icon">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div class="fallback-title">Modify Inventory Record</div>
+                    <div class="fallback-sub">images/update-product.png</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-bottom: 4rem;">
+        
+        <!-- Success Banner (hidden by default) -->
+        <div id="updateSuccessBanner" class="alert-banner alert-success" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <div style="font-size: 1.5rem; color: #10b981;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; font-size: 1rem; color: #065f46;">Product Successfully Updated!</h4>
+                    <p id="updatedProductInfo" style="margin: 0.2rem 0 0; font-size: 0.85rem; color: #047857;"></p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="list.html" class="btn btn-primary btn-sm">View in Inventory</a>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('updateSuccessBanner').style.display='none'">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Step 1: Lookup Product By ID -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--color-forest-primary); color: white; text-align: center; line-height: 24px; font-size: 0.8rem; margin-right: 6px;">1</span>
+                    Lookup Supermarket Item to Update
+                </div>
+                <span style="font-size: 0.85rem; color: var(--color-text-muted);">Enter exact Product ID</span>
+            </div>
+
+            <form id="lookupProductForm" autocomplete="off">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <input 
+                            type="text" 
+                            id="lookupProductId" 
+                            list="updateProductSuggestions"
+                            class="form-control" 
+                            placeholder="Enter Product ID or start typing product name (e.g. 1 or Basmati)..." 
+                            required
+                        >
+                        <datalist id="updateProductSuggestions"></datalist>
+                    </div>
+                    <button type="submit" id="btnLookupProduct" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find Product
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 2: Edit Form Card (Revealed after successful lookup) -->
+        <div id="updateFormCard" class="card" style="display: none;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--color-orange-accent); color: white; text-align: center; line-height: 24px; font-size: 0.8rem; margin-right: 6px;">2</span>
+                    Edit Product Values
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    <span id="editStockStatusBadge" class="badge badge-in-stock">Item Loaded From MySQL</span>
+                    <button type="button" id="btnResetLookup" class="btn btn-outline btn-sm" title="Lookup another product">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Change Product
+                    </button>
+                </div>
+            </div>
+
+            <form id="updateProductForm" autocomplete="off">
+                
+                <div class="form-row">
+                    <!-- Product ID (Readonly) -->
+                    <div class="form-group">
+                        <label for="edit_product_id" class="form-label">
+                            Product ID <span style="font-size: 0.8rem; font-weight: normal; color: var(--color-text-muted);">(Primary Key — Locked)</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="edit_product_id" 
+                            class="form-control" 
+                            readonly 
+                            style="font-family: monospace; font-weight: 700;"
+                        >
+                        <span class="form-hint">Database identifier is immutable.</span>
+                    </div>
+
+                    <!-- Category Dropdown -->
+                    <div class="form-group">
+                        <label for="edit_product_category" class="form-label">
+                            Supermarket Category <span class="required">*</span>
+                        </label>
+                        <select id="edit_product_category" class="form-control" required>
+                            <option value="Rice, Grains & Pulses">🌾 Rice, Grains & Pulses</option>
+                            <option value="Cooking Essentials">🍳 Cooking Essentials</option>
+                            <option value="Biscuits, Chocolates & Snacks">🍪 Biscuits, Chocolates & Snacks</option>
+                            <option value="Dairy & Beverages">🥛 Dairy & Beverages</option>
+                            <option value="Personal Care">🧼 Personal Care</option>
+                            <option value="Home Care">🧹 Home Care</option>
+                        </select>
+                        <span class="form-hint">Aisle categorization.</span>
+                    </div>
+                </div>
+
+                <!-- Product Name -->
+                <div class="form-group">
+                    <label for="edit_product_name" class="form-label">
+                        Product Name <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="edit_product_name" 
+                        class="form-control" 
+                        required 
+                        maxlength="255"
+                    >
+                    <span class="form-hint">Commercial packaging title.</span>
+                </div>
+
+                <!-- Price, Quantity, Reorder -->
+                <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="form-group">
+                        <label for="edit_product_price" class="form-label">
+                            Price ($) <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="edit_product_price" 
+                            class="form-control" 
+                            step="0.01" 
+                            min="0" 
+                            required
+                        >
+                        <span class="form-hint">Retail price per unit.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_product_quantity" class="form-label">
+                            Quantity in Stock <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="edit_product_quantity" 
+                            class="form-control" 
+                            step="1" 
+                            min="0" 
+                            required
+                        >
+                        <span class="form-hint">Physical stock count.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_reorder_level" class="form-label">
+                            Reorder Level <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="edit_reorder_level" 
+                            class="form-control" 
+                            step="1" 
+                            min="0" 
+                            required
+                        >
+                        <span class="form-hint">Threshold trigger.</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                    <a href="list.html" class="btn btn-outline">Cancel</a>
+                    <button type="submit" id="btnSaveUpdate" class="btn btn-orange btn-lg">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes to MySQL
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div>
+                <span class="category-tag">Update & Restock</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>

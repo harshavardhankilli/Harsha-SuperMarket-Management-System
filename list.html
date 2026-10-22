@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket — View Products</title>
+    <meta name="description" content="View, search, filter, and manage supermarket stock inventory live from MySQL.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="list">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link active"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Hero Banner with Dedicated View Products Image Area -->
+    <section class="page-hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="fa-solid fa-boxes-stacked"></i> Inventory Catalog
+                </div>
+                <h1 class="hero-title">Supermarket Products</h1>
+                <p class="hero-subtitle">
+                    Complete inventory catalog pulled dynamically from MySQL. Filter by department aisle, search by item name, verify stock status badges, and perform instant updates.
+                </p>
+                <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                    <a href="insert.html" class="btn btn-orange btn-sm">
+                        <i class="fa-solid fa-plus"></i> Add New Product
+                    </a>
+                    <a href="low-stock.html" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Low Stock Alerts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dedicated Image Area (View: images/view-products.png) with Clean CSS Fallback -->
+            <div class="page-image-box">
+                <img src="images/view-products.png" alt="Supermarket Catalog" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none;">
+                    <div class="fallback-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div class="fallback-title">Supermarket Catalog</div>
+                    <div class="fallback-sub">images/view-products.png</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-bottom: 4rem;">
+        
+        <!-- Filter & Search Toolbar Card -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+                
+                <!-- Search Input -->
+                <div style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-text-light);"></i>
+                    <input 
+                        type="text" 
+                        id="listSearch" 
+                        list="listSearchSuggestions"
+                        class="form-control" 
+                        placeholder="Search by ID or Product Name..." 
+                        style="padding-left: 2.5rem;"
+                    >
+                    <datalist id="listSearchSuggestions"></datalist>
+                </div>
+
+                <!-- Category Filter -->
+                <div style="min-width: 190px;">
+                    <select id="listCategoryFilter" class="form-control" aria-label="Filter by category">
+                        <option value="all">All Categories</option>
+                        <option value="Rice, Grains & Pulses">Rice, Grains & Pulses</option>
+                        <option value="Cooking Essentials">Cooking Essentials</option>
+                        <option value="Biscuits, Chocolates & Snacks">Biscuits, Chocolates & Snacks</option>
+                        <option value="Dairy & Beverages">Dairy & Beverages</option>
+                        <option value="Personal Care">Personal Care</option>
+                        <option value="Home Care">Home Care</option>
+                    </select>
+                </div>
+
+                <!-- Stock Status Filter -->
+                <div style="min-width: 150px;">
+                    <select id="listStatusFilter" class="form-control" aria-label="Filter by stock status">
+                        <option value="all">All Stock Statuses</option>
+                        <option value="in_stock">In Stock</option>
+                        <option value="low_stock">Low Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
+                </div>
+
+                <!-- Sort Filter -->
+                <div style="min-width: 160px;">
+                    <select id="listSort" class="form-control" aria-label="Sort products">
+                        <option value="id_asc">Sort: ID (Low &rarr; High)</option>
+                        <option value="id_desc">Sort: ID (High &rarr; Low)</option>
+                        <option value="name_asc">Sort: Name (A &rarr; Z)</option>
+                        <option value="name_desc">Sort: Name (Z &rarr; A)</option>
+                        <option value="price_asc">Sort: Price (Low &rarr; High)</option>
+                        <option value="price_desc">Sort: Price (High &rarr; Low)</option>
+                        <option value="qty_asc">Sort: Quantity (Low &rarr; High)</option>
+                        <option value="qty_desc">Sort: Quantity (High &rarr; Low)</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons: Clear & Refresh -->
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="btnClearListFilters" class="btn btn-outline" title="Reset all search filters">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Clear
+                    </button>
+                    <button id="btnRefreshList" class="btn btn-outline" title="Reload inventory from MySQL">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Subbar summary -->
+            <div style="margin-top: 0.85rem; font-size: 0.85rem; color: var(--color-text-muted); display: flex; justify-content: space-between; align-items: center;">
+                <span id="listCountDisplay">Loading inventory records...</span>
+                <span><i class="fa-solid fa-database"></i> Source: MySQL <code>products</code></span>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+            
+            <!-- Loading Indicator -->
+            <div id="listLoading" style="padding: 3.5rem; text-align: center;">
+                <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--color-forest-primary);"></i>
+                <p style="margin-top: 0.75rem; color: var(--color-text-muted); font-size: 0.95rem;">Retrieving products from MySQL...</p>
+            </div>
+
+            <!-- Responsive Table Wrapper -->
+            <div class="table-responsive" style="border: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 90px;">ID</th>
+                            <th>Product Name</th>
+                            <th style="width: 180px;">Category</th>
+                            <th style="width: 110px;">Price</th>
+                            <th style="width: 120px;">Quantity</th>
+                            <th style="width: 110px;">Reorder</th>
+                            <th style="width: 130px;">Stock Status</th>
+                            <th style="width: 100px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Populated dynamically by app.js -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="listEmpty" class="empty-state" style="display: none; border: none; margin: 0; padding: 4rem 1.5rem;">
+                <div class="empty-state-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <h3 class="empty-state-title">No Supermarket Products Found</h3>
+                <p class="empty-state-desc">
+                    No products match your filter criteria or the database is currently empty.
+                </p>
+                <a href="insert.html" class="btn btn-orange">
+                    <i class="fa-solid fa-plus"></i> Insert First Product
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div>
+                <span class="category-tag">Live MySQL Inventory</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>

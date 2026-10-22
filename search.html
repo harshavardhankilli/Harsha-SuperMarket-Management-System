@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket — Search Product</title>
+    <meta name="description" content="Search supermarket inventory by Product ID or Name with department category filters in MySQL.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="search">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link active"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Hero Banner with Dedicated Search Image Area -->
+    <section class="page-hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search Engine
+                </div>
+                <h1 class="hero-title">Search Supermarket Items</h1>
+                <p class="hero-subtitle">
+                    Find products instantly across all six supermarket categories. Query by product ID, item title, or narrow down by department.
+                </p>
+            </div>
+
+            <!-- Dedicated Image Area (Search: images/search-product.png) with Clean CSS Fallback -->
+            <div class="page-image-box">
+                <img src="images/search-product.png" alt="Search Supermarket Products" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none;">
+                    <div class="fallback-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div class="fallback-title">Lookup Supermarket Stock</div>
+                    <div class="fallback-sub">images/search-product.png</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-bottom: 4rem;">
+        
+        <!-- Search Card -->
+        <div class="card" style="padding: 1.75rem; margin-bottom: 2rem;">
+            <form id="searchProductForm" autocomplete="off">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    
+                    <!-- Search Input with Autocomplete Container -->
+                    <div class="autocomplete-container" style="flex: 2; min-width: 250px;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 24px; transform: translateY(-50%); color: var(--color-forest-primary); z-index: 2;"></i>
+                        <input 
+                            type="text" 
+                            id="searchQueryInput" 
+                            class="form-control" 
+                            placeholder="Enter Product ID or Name (e.g. 2, Basmati Rice, Oil, Milk)..." 
+                            style="padding-left: 2.75rem; height: 48px;"
+                        >
+                        <!-- Autocomplete Suggestions Dropdown -->
+                        <div id="searchAutocompleteList" class="autocomplete-dropdown" style="display: none;"></div>
+                    </div>
+
+                    <!-- Category Filter Dropdown -->
+                    <div style="flex: 1; min-width: 200px;">
+                        <select id="searchCategoryFilter" class="form-control" style="height: 48px;" aria-label="Filter by supermarket category">
+                            <option value="all">All Supermarket Categories</option>
+                            <option value="Rice, Grains & Pulses">Rice, Grains & Pulses</option>
+                            <option value="Cooking Essentials">Cooking Essentials</option>
+                            <option value="Biscuits, Chocolates & Snacks">Biscuits, Chocolates & Snacks</option>
+                            <option value="Dairy & Beverages">Dairy & Beverages</option>
+                            <option value="Personal Care">Personal Care</option>
+                            <option value="Home Care">Home Care</option>
+                        </select>
+                    </div>
+
+                    <!-- Stock Status Filter Dropdown -->
+                    <div style="flex: 1; min-width: 170px;">
+                        <select id="searchStatusFilter" class="form-control" style="height: 48px;" aria-label="Filter by stock status">
+                            <option value="all">All Stock Statuses</option>
+                            <option value="in_stock">In Stock</option>
+                            <option value="low_stock">Low Stock</option>
+                            <option value="out_of_stock">Out of Stock</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Order Dropdown -->
+                    <div style="flex: 1; min-width: 170px;">
+                        <select id="searchSort" class="form-control" style="height: 48px;" aria-label="Sort search results">
+                            <option value="id_asc">Sort: ID (Low &rarr; High)</option>
+                            <option value="id_desc">Sort: ID (High &rarr; Low)</option>
+                            <option value="name_asc">Sort: Name (A &rarr; Z)</option>
+                            <option value="name_desc">Sort: Name (Z &rarr; A)</option>
+                            <option value="price_asc">Sort: Price (Low &rarr; High)</option>
+                            <option value="price_desc">Sort: Price (High &rarr; Low)</option>
+                            <option value="qty_asc">Sort: Quantity (Low &rarr; High)</option>
+                            <option value="qty_desc">Sort: Quantity (High &rarr; Low)</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Button -->
+                    <button type="submit" id="btnSearchSubmit" class="btn btn-orange btn-lg" style="height: 48px; padding: 0 1.5rem;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </button>
+
+                    <!-- Clear Filters Button -->
+                    <button type="button" id="btnClearSearch" class="btn btn-outline btn-lg" style="height: 48px; padding: 0 1.25rem;">
+                        <i class="fa-solid fa-xmark"></i> Clear Filters
+                    </button>
+                </div>
+
+                <!-- Secondary Search Options -->
+                <div style="margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; font-size: 0.85rem; color: var(--color-text-muted);">
+                    <label style="display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; color: var(--color-text-dark); font-weight: 600;">
+                        <input type="checkbox" id="exactIdCheckbox" style="accent-color: var(--color-forest-primary); width: 16px; height: 16px;">
+                        <span>Exact Product ID Match</span>
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-bolt" style="color: var(--color-orange-accent);"></i>
+                        <span>Live MySQL search with autocomplete suggestions</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Count Display Banner -->
+        <div id="searchResultsCount" class="results-count-banner" style="display: none;"></div>
+
+        <!-- Search Results Container -->
+        <div id="searchResultsContainer"></div>
+
+        <!-- Empty State (No matches found) -->
+        <div id="searchEmptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon" style="color: var(--color-orange-accent);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="empty-state-title">No Matching Supermarket Items</h3>
+            <p class="empty-state-desc">
+                No items in MySQL matched "<span id="searchEchoTerm" style="font-weight: 700; color: var(--color-forest-dark);"></span>". Check spelling or select another department.
+            </p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                <a href="insert.html" class="btn btn-orange">
+                    <i class="fa-solid fa-plus"></i> Insert This Item
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div>
+                <span class="category-tag">Search & Query Engine</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>

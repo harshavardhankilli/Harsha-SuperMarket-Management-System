@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket — Insert Product</title>
+    <meta name="description" content="Add new supermarket inventory items with real-time validation and category suggestions into MySQL.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="insert">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link active"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Hero Banner with Dedicated Insert Image Area -->
+    <section class="page-hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="fa-solid fa-cart-plus"></i> Product Intake
+                </div>
+                <h1 class="hero-title">Insert New Product</h1>
+                <p class="hero-subtitle">
+                    Register a new supermarket item into the MySQL database. Select the department category, review suggestions, and set stock thresholds.
+                </p>
+                <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                    <a href="list.html" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-boxes-stacked"></i> View All Products
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dedicated Image Area (Insert: images/insert-product.png) with Clean CSS Fallback -->
+            <div class="page-image-box">
+                <img src="images/insert-product.png" alt="Insert Supermarket Product" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none;">
+                    <div class="fallback-icon">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </div>
+                    <div class="fallback-title">Add Supermarket Stock</div>
+                    <div class="fallback-sub">images/insert-product.png</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Form Section -->
+    <main class="container" style="margin-bottom: 4rem;">
+        
+        <!-- Success Banner (hidden by default) -->
+        <div id="insertSuccessBanner" class="alert-banner alert-success" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <div style="font-size: 1.5rem; color: #10b981;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; font-size: 1rem; color: #065f46;">Product Successfully Added to MySQL!</h4>
+                    <p style="margin: 0.2rem 0 0; font-size: 0.85rem; color: #047857;">
+                        ID: <strong id="bannerProductId"></strong> &bull; Product: <strong id="bannerProductName"></strong>
+                    </p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="list.html" class="btn btn-primary btn-sm">View in Inventory</a>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('insertSuccessBanner').style.display='none'">Dismiss</button>
+            </div>
+        </div>
+
+        <div style="max-width: 840px; margin: 0 auto;">
+            
+            <!-- Product Entry Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fa-solid fa-box-archive" style="color: var(--color-forest-primary);"></i>
+                        Product Information Form
+                    </div>
+                    <span style="font-size: 0.8rem; color: var(--color-text-muted);">
+                        <span style="color: #dc2626;">*</span> Mandatory fields
+                    </span>
+                </div>
+
+                <form id="insertProductForm" autocomplete="off" novalidate>
+                    
+                    <!-- Row 1: Product Category & Product ID -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product_category" class="form-label">
+                                Supermarket Category <span class="required">*</span>
+                            </label>
+                            <select id="product_category" name="product_category" class="form-control" required>
+                                <option value="" disabled selected>-- Select Supermarket Category --</option>
+                                <option value="Rice, Grains & Pulses">🌾 Rice, Grains & Pulses</option>
+                                <option value="Cooking Essentials">🍳 Cooking Essentials</option>
+                                <option value="Biscuits, Chocolates & Snacks">🍪 Biscuits, Chocolates & Snacks</option>
+                                <option value="Dairy & Beverages">🥛 Dairy & Beverages</option>
+                                <option value="Personal Care">🧼 Personal Care</option>
+                                <option value="Home Care">🧹 Home Care</option>
+                            </select>
+                            <span class="form-hint">Organizes products into supermarket aisles.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="product_id" class="form-label">
+                                Product ID <span style="font-size: 0.8rem; color: var(--color-text-muted); font-weight: normal;">(Optional / Auto-Generated)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="product_id" 
+                                name="product_id" 
+                                class="form-control" 
+                                placeholder="Leave blank for MySQL Auto-Increment"
+                            >
+                            <span class="form-hint">If supported by schema, MySQL auto-generates ID.</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Product Name with Category Suggestions -->
+                    <div class="form-group">
+                        <label for="product_name" class="form-label">
+                            Product Name <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="product_name" 
+                            name="product_name" 
+                            class="form-control" 
+                            placeholder="e.g., Basmati Rice (5kg) or Sunflower Cooking Oil (1L)" 
+                            required 
+                            maxlength="255"
+                        >
+                        <!-- Dynamic Suggestions Chips -->
+                        <div id="categorySuggestions" class="suggestion-chips" style="display: none;"></div>
+                    </div>
+
+                    <!-- Row 3: Price, Quantity & Reorder Level -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="form-group">
+                            <label for="product_price" class="form-label">
+                                Price ($) <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="product_price" 
+                                name="product_price" 
+                                class="form-control" 
+                                placeholder="0.00" 
+                                step="0.01" 
+                                min="0" 
+                                required
+                            >
+                            <span class="form-hint">Retail price per unit.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="product_quantity" class="form-label">
+                                Quantity in Stock <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="product_quantity" 
+                                name="product_quantity" 
+                                class="form-control" 
+                                placeholder="0" 
+                                min="0" 
+                                step="1" 
+                                required
+                            >
+                            <span class="form-hint">Available retail units.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reorder_level" class="form-label">
+                                Reorder Level <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="reorder_level" 
+                                name="reorder_level" 
+                                class="form-control" 
+                                placeholder="10" 
+                                min="0" 
+                                step="1" 
+                                value="10" 
+                                required
+                            >
+                            <span class="form-hint">Alert threshold.</span>
+                        </div>
+                    </div>
+
+                    <!-- Live Stock Status Preview Box -->
+                    <div class="stock-preview-box">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-forest-dark);">
+                            <i class="fa-solid fa-gauge-high" style="color: var(--color-forest-primary); margin-right: 4px;"></i>
+                            Live Stock Status Preview:
+                        </div>
+                        <div id="stockStatusPreview">
+                            <span class="badge badge-out-stock"><i class="fa-solid fa-circle-xmark"></i> Out of Stock (0 units)</span>
+                        </div>
+                    </div>
+
+                    <!-- Form Action Buttons -->
+                    <div style="margin-top: 1.75rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="reset" class="btn btn-outline">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Form
+                        </button>
+                        <button type="submit" id="btnSaveProduct" class="btn btn-orange btn-lg">
+                            <i class="fa-solid fa-plus"></i> Save Product
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div>
+                <span class="category-tag">MySQL Powered</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>

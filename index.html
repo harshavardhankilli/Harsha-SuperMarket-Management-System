@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket Inventory Management System — Home</title>
+    <meta name="description" content="Harsha Supermarket Inventory Management System - Complete retail inventory management connected to MySQL.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Welcome Hero Section with Dedicated Supermarket Hero Banner -->
+    <section class="page-hero">
+        <div class="container">
+            <!-- Prominent Store Hero Banner (supermarket-hero.png) -->
+            <div class="home-hero-banner">
+                <img src="images/supermarket-hero.png" alt="Harsha Supermarket Inventory Management System" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none; height: 180px;">
+                    <div class="fallback-icon">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <div class="fallback-title">Harsha Supermarket Store</div>
+                    <div class="fallback-sub">images/supermarket-hero.png</div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem;">
+                <div>
+                    <div class="hero-pill">
+                        <i class="fa-solid fa-store"></i> Fresh Products &bull; Better Inventory &bull; Organized Store
+                    </div>
+                    <h1 class="hero-title" style="margin-bottom: 0.35rem;">Harsha Supermarket Inventory System</h1>
+                    <p class="hero-subtitle" style="margin: 0;">
+                        Streamlined retail inventory management for supermarket stock levels, aisle organization, reorder alerts, and real-time MySQL operations.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.85rem; flex-wrap: wrap;">
+                    <a href="list.html" class="btn btn-primary btn-lg">
+                        <i class="fa-solid fa-boxes-stacked"></i> View Inventory
+                    </a>
+                    <a href="insert.html" class="btn btn-orange btn-lg">
+                        <i class="fa-solid fa-plus"></i> Add New Product
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-bottom: 3.5rem;">
+        
+        <!-- Quick Metrics Overview Strip (4 Key Retail Metrics) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2.5rem;">
+            <!-- 1. Total Products -->
+            <a href="list.html" class="card" style="display: flex; align-items: center; gap: 1rem; border-left: 4px solid var(--color-forest-primary); text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-forest-soft); color: var(--color-forest-primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-forest-dark);" id="homeTotalCount">-</div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 600;">Total Products</div>
+                </div>
+            </a>
+
+            <!-- 2. Supermarket Categories -->
+            <a href="#categorySummarySection" class="card" style="display: flex; align-items: center; gap: 1rem; border-left: 4px solid #2563eb; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-forest-dark);" id="homeCategoriesCount">6</div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 600;">Categories</div>
+                </div>
+            </a>
+
+            <!-- 3. Low Stock Items -->
+            <a href="low-stock.html" class="card" style="display: flex; align-items: center; gap: 1rem; border-left: 4px solid var(--color-orange-accent); text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-orange-soft); color: var(--color-orange-accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-orange-accent);" id="homeLowCount">-</div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 600;">Low Stock Items</div>
+                </div>
+            </a>
+
+            <!-- 4. Out of Stock Items -->
+            <a href="list.html?status=out_of_stock" class="card" style="display: flex; align-items: center; gap: 1rem; border-left: 4px solid #ef4444; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #ef4444;" id="homeOutCount">-</div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-text-muted); font-weight: 600;">Out of Stock</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 1. Six Supermarket Category Cards -->
+        <section class="categories-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--color-forest-primary); margin-right: 6px;"></i> Supermarket Categories</h2>
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.2rem;">Explore inventory by retail department or click to filter products:</p>
+                </div>
+                <a href="list.html" class="btn btn-outline btn-sm">View All Departments</a>
+            </div>
+
+            <div class="categories-grid">
+                <!-- Category 1 -->
+                <a href="list.html?category=Rice%2C%20Grains%20%26%20Pulses" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-bowl-rice"></i>
+                    </div>
+                    <span class="category-name">Rice, Grains & Pulses</span>
+                    <span class="category-count" data-cat-badge="Rice, Grains & Pulses">Rice, Dal, Atta</span>
+                </a>
+
+                <!-- Category 2 -->
+                <a href="list.html?category=Cooking%20Essentials" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-bottle-droplet"></i>
+                    </div>
+                    <span class="category-name">Cooking Essentials</span>
+                    <span class="category-count" data-cat-badge="Cooking Essentials">Oil, Sugar, Spices</span>
+                </a>
+
+                <!-- Category 3 -->
+                <a href="list.html?category=Biscuits%2C%20Chocolates%20%26%20Snacks" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-cookie-bite"></i>
+                    </div>
+                    <span class="category-name">Biscuits, Chocolates & Snacks</span>
+                    <span class="category-count" data-cat-badge="Biscuits, Chocolates & Snacks">Biscuits, Chips, Bars</span>
+                </a>
+
+                <!-- Category 4 -->
+                <a href="list.html?category=Dairy%20%26%20Beverages" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <span class="category-name">Dairy & Beverages</span>
+                    <span class="category-count" data-cat-badge="Dairy & Beverages">Milk, Juices, Tea</span>
+                </a>
+
+                <!-- Category 5 -->
+                <a href="list.html?category=Personal%20Care" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-pump-soap"></i>
+                    </div>
+                    <span class="category-name">Personal Care</span>
+                    <span class="category-count" data-cat-badge="Personal Care">Soaps, Shampoos</span>
+                </a>
+
+                <!-- Category 6 -->
+                <a href="list.html?category=Home%20Care" class="category-card">
+                    <div class="category-icon-box">
+                        <i class="fa-solid fa-spray-can-sparkles"></i>
+                    </div>
+                    <span class="category-name">Home Care</span>
+                    <span class="category-count" data-cat-badge="Home Care">Detergents, Cleaners</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Category-Wise Product Summary (Real MySQL Breakdown) -->
+        <section id="categorySummarySection" style="margin-bottom: 2.5rem;">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-chart-pie" style="color: var(--color-forest-primary); margin-right: 6px;"></i> Category-Wise Stock Summary</h2>
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.2rem;">Live breakdown of total SKUs, healthy stock, low stock, and out of stock items across all 6 departments:</p>
+                </div>
+                <a href="list.html" class="btn btn-outline btn-sm">Full Inventory View</a>
+            </div>
+
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div class="table-responsive" style="border: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Department Category</th>
+                                <th style="width: 140px; text-align: center;">Total SKUs</th>
+                                <th style="width: 150px; text-align: center;">In Stock</th>
+                                <th style="width: 150px; text-align: center;">Low Stock</th>
+                                <th style="width: 150px; text-align: center;">Out of Stock</th>
+                                <th style="width: 140px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categorySummaryTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+                                    <i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Loading MySQL department summary...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Recent Inventory Highlights (Live MySQL) -->
+        <section id="recentProductsSection" style="margin-bottom: 2.5rem;">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--color-forest-primary); margin-right: 6px;"></i> Recent Inventory Highlights</h2>
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.2rem;">Recently registered supermarket inventory items retrieved live from MySQL:</p>
+                </div>
+                <a href="list.html?sort=id_desc" class="btn btn-outline btn-sm">Full Inventory View</a>
+            </div>
+
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div class="table-responsive" style="border: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">ID</th>
+                                <th>Product Name</th>
+                                <th>Department Category</th>
+                                <th>Unit Price</th>
+                                <th>Stock</th>
+                                <th>Stock Status</th>
+                                <th style="width: 130px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentProductsTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+                                    <i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Loading recent products from MySQL...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Six Supermarket Operation Cards -->
+        <section>
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-sliders" style="color: var(--color-forest-primary); margin-right: 6px;"></i> Inventory Operations</h2>
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.2rem;">Direct access to all supermarket stock operations:</p>
+                </div>
+            </div>
+
+            <div class="operations-grid">
+                <!-- 1. Insert Card -->
+                <a href="insert.html" class="op-card">
+                    <div class="op-card-icon">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                    <h3 class="op-card-title">Insert Product</h3>
+                    <p class="op-card-desc">Add new supermarket products with department dropdowns, suggested titles, and price/quantity validation.</p>
+                    <div class="op-card-link">
+                        <span>Open Entry Form</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- 2. View Card -->
+                <a href="list.html" class="op-card">
+                    <div class="op-card-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <h3 class="op-card-title">View Products</h3>
+                    <p class="op-card-desc">Browse complete supermarket catalog retrieved live from MySQL. Filter by department, search, and sort items.</p>
+                    <div class="op-card-link">
+                        <span>Browse Catalog</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- 3. Search Card -->
+                <a href="search.html" class="op-card">
+                    <div class="op-card-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="op-card-title">Search Product</h3>
+                    <p class="op-card-desc">Find items instantly by Product ID or Name, with optional category filtering and instant edit/delete actions.</p>
+                    <div class="op-card-link">
+                        <span>Search Inventory</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- 4. Update Card -->
+                <a href="update.html" class="op-card">
+                    <div class="op-card-icon">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <h3 class="op-card-title">Update Product</h3>
+                    <p class="op-card-desc">Look up existing grocery items, adjust price or replenished stock units, and save directly to MySQL.</p>
+                    <div class="op-card-link">
+                        <span>Edit Stock Details</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- 5. Delete Card -->
+                <a href="delete.html" class="op-card">
+                    <div class="op-card-icon">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                    <h3 class="op-card-title">Delete Product</h3>
+                    <p class="op-card-desc">Review discontinued supermarket items and safely purge records from MySQL with two-step confirmation.</p>
+                    <div class="op-card-link">
+                        <span>Remove Products</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+
+                <!-- 6. Low Stock Card -->
+                <a href="low-stock.html" class="op-card" style="border-left: 4px solid var(--color-orange-accent);">
+                    <div class="op-card-icon" style="color: var(--color-orange-accent); background-color: var(--color-orange-soft);">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="op-card-title">Low Stock Alert</h3>
+                    <p class="op-card-desc">Dedicated reorder stream highlighting products where stock is at or below threshold, with calculated unit deficits.</p>
+                    <div class="op-card-link" style="color: var(--color-orange-accent);">
+                        <span>Check Reorder Alerts</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="category-tag">HTML5</span>
+                <span class="category-tag">CSS3</span>
+                <span class="category-tag">Vanilla JS</span>
+                <span class="category-tag">Node.js Express</span>
+                <span class="category-tag">MySQL</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>

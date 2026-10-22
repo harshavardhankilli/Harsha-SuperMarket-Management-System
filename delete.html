@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsha Supermarket — Delete Product</title>
+    <meta name="description" content="Safely remove discontinued products from MySQL database with two-step verification.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Supermarket Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="delete">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-link">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">HARSHA SUPERMARKET</span>
+                    <span class="brand-subtitle">Inventory Management</span>
+                </div>
+            </a>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="insert.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Insert</a></li>
+                <li><a href="list.html" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> View All</a></li>
+                <li><a href="search.html" class="nav-link"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
+                <li><a href="update.html" class="nav-link"><i class="fa-solid fa-pen-to-square"></i> Update</a></li>
+                <li><a href="delete.html" class="nav-link active"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                <li><a href="low-stock.html" class="nav-link"><i class="fa-solid fa-triangle-exclamation"></i> Low Stock</a></li>
+                <li>
+                    <div class="nav-status" id="navStatus" title="Click to test live MySQL connection">
+                        <span class="status-dot" id="navDbDot"></span>
+                        <span id="navDbText">MySQL: Checking...</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Page Hero Banner with Dedicated Delete Image Area -->
+    <section class="page-hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill" style="background: #fee2e2; color: #991b1b;">
+                    <i class="fa-solid fa-trash"></i> Safe Deletion Manager
+                </div>
+                <h1 class="hero-title">Delete Supermarket Product</h1>
+                <p class="hero-subtitle">
+                    Safely decommission items and permanently purge records from MySQL. Includes pre-deletion inspection and strict confirmation.
+                </p>
+            </div>
+
+            <!-- Dedicated Image Area (Delete: images/delete-product.png) with Clean CSS Fallback -->
+            <div class="page-image-box">
+                <img src="images/delete-product.png" alt="Delete Supermarket Product" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback-placeholder" style="display: none;">
+                    <div class="fallback-icon" style="background: #fee2e2; color: #dc2626;">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                    <div class="fallback-title">Remove Discontinued Stock</div>
+                    <div class="fallback-sub">images/delete-product.png</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-bottom: 4rem;">
+        
+        <!-- Deletion Success Banner (hidden by default) -->
+        <div id="deleteSuccessBanner" class="alert-banner alert-success" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <div style="font-size: 1.5rem; color: #10b981;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h4 style="margin: 0; font-size: 1rem; color: #065f46;">Product Successfully Removed from Database!</h4>
+                    <p id="deletedProductInfo" style="margin: 0.2rem 0 0; font-size: 0.85rem; color: #047857;"></p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="list.html" class="btn btn-primary btn-sm">View Remaining Items</a>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('deleteSuccessBanner').style.display='none'">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Step 1: Lookup Product By ID -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--color-forest-primary); color: white; text-align: center; line-height: 24px; font-size: 0.8rem; margin-right: 6px;">1</span>
+                    Lookup Item to Delete
+                </div>
+                <span style="font-size: 0.85rem; color: var(--color-text-muted);">Enter exact Product ID</span>
+            </div>
+
+            <form id="deleteLookupForm" autocomplete="off">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <input 
+                            type="text" 
+                            id="deleteLookupId" 
+                            list="deleteProductSuggestions"
+                            class="form-control" 
+                            placeholder="Enter Product ID or start typing name (e.g. 5 or Chips)..." 
+                            required
+                        >
+                        <datalist id="deleteProductSuggestions"></datalist>
+                    </div>
+                    <button type="submit" id="btnDeleteLookup" class="btn btn-primary">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find Product
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 2: Confirmation / Preview Card (Revealed after lookup) -->
+        <div id="deletePreviewCard" class="card" style="display: none; border-left: 4px solid #dc2626;">
+            <div class="card-header">
+                <div class="card-title" style="color: #dc2626;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Verify Product Record Before Deletion
+                </div>
+                <span class="badge badge-out-stock">Irreversible Action</span>
+            </div>
+
+            <!-- Item Data Breakdown -->
+            <div style="background-color: var(--color-cream-surface); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Product ID</span>
+                        <div id="del_id" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-dark); font-family: monospace;">-</div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Product Name</span>
+                        <div id="del_name" style="font-size: 1.15rem; font-weight: 700; color: var(--color-forest-dark);">-</div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Category</span>
+                        <div id="del_category" style="font-size: 1rem; font-weight: 600; color: var(--color-forest-primary);">-</div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Price</span>
+                        <div id="del_price" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-dark);">-</div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Current Stock</span>
+                        <div id="del_quantity" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-dark);">-</div>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase;">Reorder Level</span>
+                        <div id="del_reorder" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-dark);">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-banner alert-danger" style="margin-bottom: 1.5rem;">
+                <div style="display: flex; gap: 0.65rem; align-items: center;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.25rem;"></i>
+                    <span style="font-size: 0.875rem;">
+                        <strong>Caution:</strong> Deleting will execute a SQL <code>DELETE FROM products WHERE product_id = ?</code>. This permanently removes the record from MySQL.
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <a href="list.html" class="btn btn-outline">
+                    <i class="fa-solid fa-arrow-left"></i> Cancel & Keep Item
+                </a>
+                <button type="button" id="btnExecuteDelete" class="btn btn-danger btn-lg">
+                    <i class="fa-solid fa-trash"></i> Confirm & Delete from MySQL
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div>
+                <strong>Harsha Supermarket Inventory Management System</strong> &bull; Retail Business Dashboard
+            </div>
+            <div>
+                <span class="category-tag">Database Purge Control</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>
